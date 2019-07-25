@@ -6,7 +6,6 @@ const
   src = currentSourcePath.parentDir/"build"
 
 static:
-  cDisableCaching() # TODO: remove
   gitPull("https://github.com/markspanbroek/SimpleOT.git", outdir=src)
 
 cCompile(src/"ot_sender.c")
