@@ -42,7 +42,7 @@ cOverride:
       xB* {.importc: "xB".}: ge4x
       x* {.importc: "x".}: array[4, sc25519]
   proc sender_keygen*(s: ptr SIMPLEOT_SENDER, Rs_pack: ptr cuchar,
-    keys: ptr array[4, array[HASHBYTES, cuchar]])
+    keys: ptr array[4, array[HASHBYTES, cuchar]]): bool
     {.stdcall, importc: "sender_keygen", header: src/"ot_sender.h".}
   proc receiver_keygen*(r: ptr SIMPLEOT_RECEIVER, 
     keys: ptr array[HASHBYTES, cuchar])
