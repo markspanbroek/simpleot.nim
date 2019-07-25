@@ -6,7 +6,7 @@ test "can do oblivious transfer between sender and receiver":
   var sender: SIMPLEOT_SENDER
   var receiver: SIMPLEOT_RECEIVER
 
-  sender_genS(addr sender, addr receiver.S_pack[0])  
+  sender_genS(addr sender, addr receiver.S_pack[0])
   check receiver_procS(addr receiver)
   receiver_maketable(addr receiver)
 
@@ -19,6 +19,6 @@ test "can do oblivious transfer between sender and receiver":
 
   var senderKeys: array[2, array[4, array[HASHBYTES, cuchar]]]
   check sender_keygen(addr sender, addr Rs_pack[0], addr senderKeys[0])
-  
+
   var receiverKeys: array[4, array[HASHBYTES, cuchar]]
   receiver_keygen(addr receiver, addr receiverKeys[0])

@@ -43,7 +43,7 @@ cOverride:
   proc sender_keygen*(s: ptr SIMPLEOT_SENDER, Rs_pack: ptr cuchar,
     keys: ptr array[4, array[HASHBYTES, cuchar]]): bool
     {.stdcall, importc: "sender_keygen", header: src/"ot_sender.h".}
-  proc receiver_keygen*(r: ptr SIMPLEOT_RECEIVER, 
+  proc receiver_keygen*(r: ptr SIMPLEOT_RECEIVER,
     keys: ptr array[HASHBYTES, cuchar])
     {.stdcall, importc: "receiver_keygen", header: src/"ot_receiver.h".}
 
