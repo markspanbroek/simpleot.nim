@@ -1,50 +1,42 @@
-import nimterop/[cImport, git, paths]
-import os
-import strutils
+import cimports
+import sequtils
 
-const
-  src = currentSourcePath.parentDir/"build"
+type
+  Sender* = ref object
+    data: SIMPLEOT_SENDER
+  SenderSecret* = array[PACKBYTES, cuchar]
+  SenderKeys* = array[2, array[4, array[HASHBYTES, cuchar]]]
 
-static:
-  gitPull("https://github.com/markspanbroek/SimpleOT.git", outdir=src)
+  Receiver* = ref object
+    data: SIMPLEOT_RECEIVER
+  ReceiverSecret* = array[4 * PACKBYTES, cuchar]
+  ReceiverKeys* = array[4, array[HASHBYTES, cuchar]]
+  OTError* = object of CatchableError
 
-cCompile(src/"ot_sender.c")
-cCompile(src/"ot_receiver.c")
-cCompile(src/"ge4x*.c")
-cCompile(src/"Keccak-simple.c")
-cCompile(src/"gfe4x*.c")
-cCompile(src/"fe25519*.c")
-cCompile(src/"ge25519*.c")
-cCompile(src/"sc25519*.c")
-cCompile(src/"randombytes.c")
+proc newOTError: ref OTError =
+  result = newException(OTError, "point decompression failed")
 
-{.passC: "-c".}
-cCompile(src/"*.S")
+proc generateSecret*(sender: Sender): SenderSecret =
+  sender_genS(addr sender.data, addr result[0])
 
-cImport(src/"sc25519.h")
-cImport(src/"gfe4x.h")
-cImport(src/"ge4x.h")
-cImport(src/"ot_config.h")
-cImport(src/"randombytes.h")
-cImport(src/"ot_sender.h")
+proc generateSecret*(receiver: Receiver, senderSecret: SenderSecret): ReceiverSecret =
+  receiver.data.S_pack = senderSecret
+  let success = receiver_procS(addr receiver.data)
+  if not success:
+    raise newOTError()
 
-# Nimterop doesn't support multidimensional arrays yet
-# https://github.com/nimterop/nimterop/issues/54
-cOverride:
-  type
-    SIMPLEOT_RECEIVER* {.
-      importc: "SIMPLEOT_RECEIVER", header: src/"ot_receiver.h", bycopy
-    .} = object
-      S_pack* {.importc: "S_pack".}: array[PACKBYTES, cuchar]
-      S* {.importc: "S".}: ge4x
-      table* {.importc: "table".}: array[64 div DIST, array[8, ge4x]]
-      xB* {.importc: "xB".}: ge4x
-      x* {.importc: "x".}: array[4, sc25519]
-  proc sender_keygen*(s: ptr SIMPLEOT_SENDER, Rs_pack: ptr cuchar,
-    keys: ptr array[4, array[HASHBYTES, cuchar]]): bool
-    {.stdcall, importc: "sender_keygen", header: src/"ot_sender.h".}
-  proc receiver_keygen*(r: ptr SIMPLEOT_RECEIVER,
-    keys: ptr array[HASHBYTES, cuchar])
-    {.stdcall, importc: "receiver_keygen", header: src/"ot_receiver.h".}
+  receiver_maketable(addr receiver.data)
 
-cImport(src/"ot_receiver.h")
+  var cs: array[4, cuchar]
+  simpleot_randombytes(addr cs[0], culonglong(sizeof(cs)))
+  cs.applyIt(cuchar(uint8(it) and 1))
+
+  receiver_rsgen(addr receiver.data, addr result[0], addr cs[0])
+
+proc generateKeys*(sender: Sender, receiverSecret: ReceiverSecret): SenderKeys =
+  let success = sender_keygen(addr sender.data, unsafeAddr receiverSecret[0], addr result[0])
+  if not success:
+    raise newOTError()
+
+proc generateKeys*(receiver: Receiver): ReceiverKeys =
+  receiver_keygen(addr receiver.data, addr result[0])
