@@ -40,9 +40,9 @@ cOverride:
       table* {.importc: "table".}: array[64 div DIST, array[8, ge4x]]
       xB* {.importc: "xB".}: ge4x
       x* {.importc: "x".}: array[4, sc25519]
-  proc sender_keygen*(s: ptr SIMPLEOT_SENDER, Rs_pack: ptr cuchar,
+  proc sender_keygen_check*(s: ptr SIMPLEOT_SENDER, Rs_pack: ptr cuchar,
     keys: ptr array[4, array[HASHBYTES, cuchar]]): bool
-    {.stdcall, importc: "sender_keygen", header: src/"ot_sender.h".}
+    {.stdcall, importc: "sender_keygen_check", header: src/"ot_sender.h".}
   proc receiver_keygen*(r: ptr SIMPLEOT_RECEIVER,
     keys: ptr array[HASHBYTES, cuchar])
     {.stdcall, importc: "receiver_keygen", header: src/"ot_receiver.h".}

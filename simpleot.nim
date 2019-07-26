@@ -21,7 +21,7 @@ proc generateSecret*(sender: Sender): SenderSecret =
 
 proc generateSecret*(receiver: Receiver, senderSecret: SenderSecret): ReceiverSecret =
   receiver.data.S_pack = senderSecret
-  let success = receiver_procS(addr receiver.data)
+  let success = receiver_procS_check(addr receiver.data)
   if not success:
     raise newOTError()
 
@@ -34,7 +34,7 @@ proc generateSecret*(receiver: Receiver, senderSecret: SenderSecret): ReceiverSe
   receiver_rsgen(addr receiver.data, addr result[0], addr cs[0])
 
 proc generateKeys*(sender: Sender, receiverSecret: ReceiverSecret): SenderKeys =
-  let success = sender_keygen(addr sender.data, unsafeAddr receiverSecret[0], addr result[0])
+  let success = sender_keygen_check(addr sender.data, unsafeAddr receiverSecret[0], addr result[0])
   if not success:
     raise newOTError()
 
