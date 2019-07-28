@@ -1,4 +1,4 @@
-import cimports
+import simpleot/cimports
 import sequtils
 
 type
