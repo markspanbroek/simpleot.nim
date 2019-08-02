@@ -21,13 +21,13 @@ suite "oblivious transfer":
   test "sender creates keys":
     let senderMessage = sender.generateSecret()
     let receiverMessage = receiver.generateSecret(senderMessage)
-    var empty: (Keys, Keys)
+    var empty: (array[4, Key], array[4, Key])
     check sender.generateKeys(receiverMessage) != empty
 
   test "receiver creates keys":
     let senderMessage = sender.generateSecret()
     discard receiver.generateSecret(senderMessage)
-    var empty: Keys
+    var empty: array[4, Key]
     check receiver.generateKeys() != empty
 
   test "raises error when sender message is invalid":
