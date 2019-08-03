@@ -8,20 +8,20 @@ Generate a sender secret:
 import simpleot
 
 let sender = Sender()
-let senderSecret = sender.generateSecret()
+let senderMessage = sender.generateSecret()
 ```
 
 Generate a receiver secret:
 
 ```nim
 let receiver = Receiver()
-let receiverSecret = receiver.generateSecret(senderSecret)
+let receiverMessage = receiver.generateSecret(senderMessage)
 ```
 
 Generate sender keys:
 
 ```nim
-let senderKeys = sender.generateKeys(receiverSecret)
+let senderKeys = sender.generateKeys(receiverMessage)
 ```
 
 Generate receiver keys:
