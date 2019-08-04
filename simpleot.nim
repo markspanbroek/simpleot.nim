@@ -37,8 +37,12 @@ proc generateSecret*(receiver: Receiver,
                  addr result.message[0],
                  addr result.bits[0])
 
-proc generateKeys*(sender: Sender, receiverMessage: ReceiverMessage): (array[4, Key], array[4, Key]) =
-  let success = sender_keygen_check(addr sender.data, unsafeAddr receiverMessage[0], addr result[0])
+proc generateKeys*(sender: Sender,
+                   receiverMessage: ReceiverMessage):
+                   (array[4, Key], array[4, Key]) =
+  let success = sender_keygen_check(addr sender.data,
+                                    unsafeAddr receiverMessage[0],
+                                    addr result[0])
   if not success:
     raise newOTError()
 
