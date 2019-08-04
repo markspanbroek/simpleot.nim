@@ -16,11 +16,21 @@ suite "oblivious transfer":
   test "receiver creates secret":
     let senderMessage = sender.generateSecret()
     var empty: ReceiverMessage
-    check receiver.generateSecret(senderMessage) != empty
+    check receiver.generateSecret(senderMessage).message != empty
+
+  test "receiver creates random choice bits":
+    let senderMessage = sender.generateSecret()
+    var bits1, bits2: ChoiceBits
+    var tries = 10
+    while bits1 == bits2 and tries > 0:
+      bits1 = receiver.generateSecret(senderMessage).bits
+      bits2 = receiver.generateSecret(senderMessage).bits
+      dec tries
+    check bits1 != bits2
 
   test "sender creates keys":
     let senderMessage = sender.generateSecret()
-    let receiverMessage = receiver.generateSecret(senderMessage)
+    let (_, receiverMessage) = receiver.generateSecret(senderMessage)
     var empty: (array[4, Key], array[4, Key])
     check sender.generateKeys(receiverMessage) != empty
 
