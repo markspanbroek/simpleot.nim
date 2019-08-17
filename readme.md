@@ -15,7 +15,8 @@ Generate a receiver secret:
 
 ```nim
 let receiver = Receiver()
-let (choicebits, receiverMessage) = receiver.generateSecret(senderMessage)
+let bits = generateChoiceBits()
+let receiverMessage = receiver.generateSecret(senderMessage, bits)
 ```
 
 Generate sender keys:
