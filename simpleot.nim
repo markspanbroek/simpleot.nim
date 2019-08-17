@@ -20,9 +20,14 @@ proc newOTError: ref OTError =
 proc generateSecret*(sender: Sender): SenderMessage =
   sender_genS(addr sender.data, addr result[0])
 
+proc generateChoiceBits*: ChoiceBits =
+  simpleot_randombytes(addr result[0], culonglong(sizeof(result)))
+  result.applyIt(cuchar(uint8(it) and 1))
+
 proc generateSecret*(receiver: Receiver,
-                     senderMessage: SenderMessage):
-                     tuple[bits: ChoiceBits, message: ReceiverMessage] =
+                     senderMessage: SenderMessage,
+                     choiceBits: ChoiceBits):
+                     ReceiverMessage =
   receiver.data.S_pack = senderMessage
   let success = receiver_procS_check(addr receiver.data)
   if not success:
@@ -30,12 +35,8 @@ proc generateSecret*(receiver: Receiver,
 
   receiver_maketable(addr receiver.data)
 
-  simpleot_randombytes(addr result.bits[0], culonglong(sizeof(result.bits)))
-  result.bits.applyIt(cuchar(uint8(it) and 1))
-
-  receiver_rsgen(addr receiver.data,
-                 addr result.message[0],
-                 addr result.bits[0])
+  var bits = choiceBits
+  receiver_rsgen(addr receiver.data, addr result[0], addr bits[0])
 
 proc generateKeys*(sender: Sender,
                    receiverMessage: ReceiverMessage):
