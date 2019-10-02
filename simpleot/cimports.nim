@@ -1,6 +1,5 @@
-import nimterop/[cImport, git, paths]
+import nimterop/[cImport, git]
 import os
-import strutils
 
 const
   src = currentSourcePath.parentDir/"build"
