@@ -7,18 +7,18 @@ const
 static:
   gitPull("https://github.com/markspanbroek/SimpleOT.git", outdir=src)
 
-cCompile(src/"ot_sender.c")
-cCompile(src/"ot_receiver.c")
-cCompile(src/"ge4x*.c")
-cCompile(src/"Keccak-simple.c")
-cCompile(src/"gfe4x*.c")
-cCompile(src/"fe25519*.c")
-cCompile(src/"ge25519*.c")
-cCompile(src/"sc25519*.c")
-cCompile(src/"randombytes.c")
+  cCompile(src/"ot_sender.c")
+  cCompile(src/"ot_receiver.c")
+  cCompile(src/"ge4x*.c")
+  cCompile(src/"Keccak-simple.c")
+  cCompile(src/"gfe4x*.c")
+  cCompile(src/"fe25519*.c")
+  cCompile(src/"ge25519*.c")
+  cCompile(src/"sc25519*.c")
+  cCompile(src/"randombytes.c")
 
-{.passC: "-c".}
-cCompile(src/"*.S")
+  {.passC: "-c".}
+  cCompile(src/"*.S")
 
 cImport(src/"sc25519.h")
 cImport(src/"gfe4x.h")
