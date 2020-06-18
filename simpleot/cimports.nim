@@ -46,4 +46,4 @@ cOverride:
     keys: ptr array[HASHBYTES, cuchar])
     {.stdcall, importc: "receiver_keygen", header: src/"ot_receiver.h".}
 
-cImport(src/"ot_receiver.h")
+cImport(src/"ot_receiver.h", flags="-E_ -F_")
