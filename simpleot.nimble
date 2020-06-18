@@ -7,5 +7,5 @@ license       = "MIT"
 
 # Dependencies
 
-requires "nim >= 0.20.0"
-requires "nimterop >= 0.3.2"
+requires "nim >= 1.2.0 & < 2.0.0"
+requires "nimterop >= 0.3.2 & < 0.4.0"
